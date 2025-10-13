@@ -10,7 +10,7 @@ config:
     hero:
       name: Firefly
       tagline: Astro Next Theme
-      text: 一款清新简约的<br>Astro 博客主题模板
+      text: 一款清新美观的<br>Astro 博客主题模板
       image: /firefly.png
     
       actions:

@@ -214,7 +214,7 @@ overlay: {
 ## 功能配置
 
 ### 目录功能
-
+depth已经弃用
 ```typescript
 toc: {
   enable: true,                       // 启用目录

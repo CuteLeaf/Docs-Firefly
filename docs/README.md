@@ -6,7 +6,7 @@ config:
     type: doc-hero
     full: true
     background: tint-plate
-    tintPlate: 72,185,119
+    tintPlate: 71,185,119
     hero:
       name: Firefly
       tagline: Astro Next Theme

@@ -2,6 +2,13 @@
 title: Z-Blog 迁移到 Firefly
 createTime: 2025/08/16 23:56:17
 permalink: /transfer/zblog-import/
+copyright:
+  creation: reprint
+  license: CC-BY-4.0
+  source: https://docs.mizuki.mysqil.com
+  author:
+    name: 松坂有希
+    url: https://github.com/matsuzaka-yuki
 ---
 
 # Z-Blog 迁移到 Firefly 指南

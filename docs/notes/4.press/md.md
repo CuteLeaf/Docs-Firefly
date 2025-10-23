@@ -2,6 +2,13 @@
 title: 什么是Markdown?(必看)
 createTime: 2025/08/17 21:09:20
 permalink: /press/md/
+copyright:
+  creation: reprint
+  license: CC-BY-4.0
+  source: https://docs.mizuki.mysqil.com
+  author:
+    name: 松坂有希
+    url: https://github.com/matsuzaka-yuki
 ---
 # 什么是Markdown?(必看)
 

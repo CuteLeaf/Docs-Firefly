@@ -2,6 +2,13 @@
 title: 文件夹方案(推荐)
 createTime: 2025/09/01 20:28:41
 permalink: /press/folder/
+copyright:
+  creation: reprint
+  license: CC-BY-4.0
+  source: https://docs.mizuki.mysqil.com
+  author:
+    name: 松坂有希
+    url: https://github.com/matsuzaka-yuki
 ---
 
 

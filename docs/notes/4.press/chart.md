@@ -2,6 +2,13 @@
 title: Mermaid图表
 createTime: 2025/08/21 13:26:53
 permalink: /press/chart/
+copyright:
+  creation: reprint
+  license: CC-BY-4.0
+  source: https://docs.mizuki.mysqil.com
+  author:
+    name: 松坂有希
+    url: https://github.com/matsuzaka-yuki
 ---
 
 我们可以使用mermaid语法来在文章中绘制图表

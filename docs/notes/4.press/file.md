@@ -2,6 +2,13 @@
 title: 单文件方案
 createTime: 2025/09/01 20:29:52
 permalink: /press/file/
+copyright:
+  creation: reprint
+  license: CC-BY-4.0
+  source: https://docs.mizuki.mysqil.com
+  author:
+    name: 松坂有希
+    url: https://github.com/matsuzaka-yuki
 ---
 # 直接在posts目录创建文章
 

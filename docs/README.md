@@ -20,15 +20,7 @@ config:
           link: /guide/intro/
         -
           theme: alt
-          text: 在线预览
-          link: https://demo-firefly.netlify.app
-        -
-          theme: alt
-          text: 夏叶博客
-          link: https://blog.cuteleaf.cn
-        -
-          theme: alt
-          text: 在Github上查看
+          text: 在Github上查看 →
           link: https://github.com/CuteLeaf/Firefly
 
 

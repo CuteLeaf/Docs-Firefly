@@ -135,14 +135,14 @@ favicon: [
 | 192x192 | PWA | 应用图标 |
 | 512x512 | PWA | 启动画面 |
 
-## Logo 配置
+## 导航栏Logo配置
 
 ### Logo 类型
 
 #### 1. Astro 图标库
 
 ```typescript
-logoIcon: {
+navbarLogo: {
   type: "icon",
   value: "material-symbols:home-pin-outline" // 图标名称
 }
@@ -151,7 +151,7 @@ logoIcon: {
 #### 2. 本地图片
 
 ```typescript
-logoIcon: {
+navbarLogo: {
   type: "image",
   value: "/assets/images/logo.webp", // 图片路径
   alt: "Firefly Logo" // 替代文本
@@ -161,36 +161,42 @@ logoIcon: {
 #### 3. 网络图片
 
 ```typescript
-logoIcon: {
+navbarLogo: {
   type: "image",
   value: "https://example.com/logo.png", // 图片URL
   alt: "Firefly Logo"
 }
 ```
 
+### 导航栏标题配置
+
+```typescript
+navbarTitle: "Firefly", // 导航栏标题，可以设置为与 title 不同的值，如果不设置则使用 title
+```
+
 ### 常用图标示例
 
 ```typescript
 // 首页图标
-logoIcon: {
+navbarLogo: {
   type: "icon",
   value: "material-symbols:home-pin-outline"
 }
 
 // 代码图标
-logoIcon: {
+navbarLogo: {
   type: "icon", 
   value: "material-symbols:code"
 }
 
 // 博客图标
-logoIcon: {
+navbarLogo: {
   type: "icon",
   value: "material-symbols:article"
 }
 
 // 自定义图片
-logoIcon: {
+navbarLogo: {
   type: "image",
   value: "/assets/images/logo.svg",
   alt: "我的博客"
@@ -334,7 +340,7 @@ export const siteConfig: SiteConfig = {
     },
   ],
   
-  logoIcon: {
+  navbarLogo: {
     type: "icon",
     value: "material-symbols:code",
   },
@@ -399,7 +405,7 @@ export const siteConfig: SiteConfig = {
     },
   ],
   
-  logoIcon: {
+  navbarLogo: {
     type: "image",
     value: "/assets/images/logo.svg",
     alt: "李四的Logo",
@@ -454,7 +460,7 @@ A: 修改 `title` 和 `subtitle` 字段
 A: 修改 `themeColor.hue` 的值（0-360）
 
 **Q: 如何更换Logo？**
-A: 修改 `logoIcon` 配置，支持图标和图片两种方式
+A: 修改 `navbarLogo` 配置，支持图标和图片两种方式
 
 **Q: 如何禁用某些页面？**
 A: 在 `pages` 配置中将对应选项设为 `false`

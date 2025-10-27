@@ -72,8 +72,8 @@ permalink: /config/wallpaper-position/
 
 ```typescript
 backgroundWallpaper: {
-  enable: true,
   mode: "banner",
+  switchable: true,
   src: {
     desktop: "/assets/desktop-banner/d1.webp",
     mobile: "/assets/mobile-banner/m1.webp",

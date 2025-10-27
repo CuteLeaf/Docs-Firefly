@@ -209,13 +209,13 @@ navbarLogo: {
 
 ```typescript
 backgroundWallpaper: {
-  enable: true, // 启用背景壁纸
-  mode: "banner", // 壁纸模式
+  mode: "banner", // 壁纸模式："banner" 横幅壁纸，"overlay" 全屏壁纸，"none" 纯色背景
+  switchable: true, // 是否允许用户通过导航栏切换壁纸模式，默认true
   src: {
     desktop: "/assets/images/d1.webp", // 桌面背景
     mobile: "/assets/images/m1.webp", // 移动背景
   },
-  position: "10% 20%", // 图片位置
+  position: "0% 20%", // 图片位置
 }
 ```
 
@@ -223,8 +223,16 @@ backgroundWallpaper: {
 
 | 模式 | 说明 | 使用场景 |
 |------|------|----------|
-| `"banner"` | Banner壁纸模式 | 主页横幅 |
-| `"overlay"` | 全屏透明覆盖 | 背景装饰 |
+| `"banner"` | 横幅壁纸 | 主页横幅，位于导航栏下方 |
+| `"overlay"` | 全屏透明覆盖 | 整个页面背景，内容半透明显示 |
+| `"none"` | 纯色背景 | 无壁纸，使用主题背景色 |
+
+### 切换控制
+
+```typescript
+switchable: true  // 允许切换，会在导航栏显示切换按钮
+switchable: false // 禁止切换，提升性能（只渲染当前模式）
+```
 
 ### 图片位置配置
 
@@ -346,8 +354,8 @@ export const siteConfig: SiteConfig = {
   },
   
   backgroundWallpaper: {
-    enable: true,
     mode: "banner",
+    switchable: true,
     src: {
       desktop: "/assets/images/tech-bg.webp",
       mobile: "/assets/images/tech-bg-mobile.webp",
@@ -412,8 +420,8 @@ export const siteConfig: SiteConfig = {
   },
   
   backgroundWallpaper: {
-    enable: true,
     mode: "overlay",
+    switchable: true,
     src: "/assets/images/pattern.webp",
     position: "center",
   },

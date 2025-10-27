@@ -17,14 +17,14 @@ export default defineUserConfig({
   base: '/',
   lang: 'zh-CN',
   title: 'Firefly主题模板官方文档',
-  description: '一个基于Firefly的博客主题模板',
+  description: 'Firefly 是一款基于 Astro 框架的模板开发的清新美观且现代化个人博客主题，专为技术爱好者和内容创作者设计。该主题融合了现代 Web 技术栈，提供了丰富的功能模块和高度可定制的界面，让您能够轻松打造出专业且美观的个人博客网站。',
 
   // 多语言配置
   locales: {
     '/': {
       lang: 'zh-CN',
       title: 'Firefly主题模板官方文档',
-      description: '一个基于Firefly的博客主题模板'
+      description: 'Firefly 是一款基于 Astro 框架的模板开发的清新美观且现代化个人博客主题，专为技术爱好者和内容创作者设计。该主题融合了现代 Web 技术栈，提供了丰富的功能模块和高度可定制的界面，让您能够轻松打造出专业且美观的个人博客网站。'
     },
   },
 
@@ -81,7 +81,7 @@ export default defineUserConfig({
     profile: {
       avatar: 'https://theme-plume.vuejs.press/plume.png',
       name: 'Firefly',
-      description: '一个基于Firefly的博客主题模板',
+      description: 'Firefly 是一款基于 Astro 框架的模板开发的清新美观且现代化个人博客主题，专为技术爱好者和内容创作者设计。该主题融合了现代 Web 技术栈，提供了丰富的功能模块和高度可定制的界面，让您能够轻松打造出专业且美观的个人博客网站。',
     },
 
     /**

@@ -11,7 +11,7 @@ config:
       name: Firefly
       tagline: Astro Next Theme
       text: 一款清新美观的<br>Astro 博客主题模板
-      image: /firefly.png
+      image: /1131.png
     
       actions:
         -

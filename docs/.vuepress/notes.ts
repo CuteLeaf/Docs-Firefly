@@ -121,7 +121,6 @@ const Note = defineNoteConfig({
 
         // 其他配置
         { text: "番剧配置", link: "animeConfig-usage/", icon: "ri:tv-line" },
-        { text: "其他配置", link: "otherConfig-usage/", icon: "ri:more-line" },
         {
           text: "壁纸位置配置详解",
           link: "wallpaper-position/",

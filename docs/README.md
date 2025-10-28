@@ -42,11 +42,11 @@ config:
       -
         title: 多语言
         icon: ⚖
-        details: 内置了 中文/英文/日语等语言支持
+        details: 内置了 中文（简/繁）/英文/日语/俄语等语言支持
       -
-        title: 双色主题
+        title: 主题切换
         icon: 👨‍💻
-        details: 支持 浅色/深色 主题，包括代码高亮
+        details: 支持 浅色/深色/跟随系统 主题自动切换，包括代码高亮
       -
         title: 功能
         icon: 📦
@@ -62,5 +62,9 @@ config:
       -
         title: Markdown 增强
         icon: 📝
-        details: 支持 Markdown 语法，支持 代码块分组、提示容器、任务列表、数学公式、代码演示等        
+        details: 支持 Markdown 语法，支持 代码块分组、提示容器、任务列表、数学公式、代码演示等
+      -
+        title: 个性化定制
+        icon: 🎨
+        details: 支持壁纸模式切换、主题色自定义、布局切换等前台定制功能        
 ---

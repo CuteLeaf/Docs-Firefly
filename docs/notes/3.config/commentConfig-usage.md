@@ -7,7 +7,14 @@ permalink: /config/commentConfig-usage/
 
 ## 概述
 
-评论配置用于在网站中集成评论系统和文章访问量统计功能，目前支持 Twikoo 评论系统和基于 Twikoo 的访问量统计。
+Firefly 支持多种主流评论系统，无需改动业务代码，仅通过 `src/config/commentConfig.ts` 配置即可灵活切换、控制注册、开启访问量统计等功能。
+
+支持的评论系统：
+- Twikoo
+- Waline
+- Giscus
+- Disqus
+- 支持关闭评论（type: none）
 
 ## 文件位置
 
@@ -15,128 +22,76 @@ permalink: /config/commentConfig-usage/
 src/config/commentConfig.ts
 ```
 
-## 基础配置
+## 多评论系统通用配置
 
-### 完整配置示例
-
-```typescript
+```ts
 export const commentConfig: CommentConfig = {
-  enable: true, // 启用评论功能。当设置为 false 时，评论组件将不会显示在文章区域。
-  enableVisitorCount: true, // 启用文章访问量统计功能。当设置为 false 时，文章访问量统计将不会显示。需要enable和enableVisitorCount都为true时才启用。
+  type: 'waline',            // 当前启用的评论系统（twikoo/waline/giscus/disqus/none）
   twikoo: {
-    envId: "https://twikoo.vercel.app", // Twikoo 环境ID
-    lang: "zh-CN", // 评论系统语言
+    envId: 'https://twikoo.vercel.app',
+    lang: 'zh-CN',
+    visitorCount: true,       // 文章访问量统计开关（true/false）
+  },
+  waline: {
+    serverURL: 'https://waline.vercel.app',
+    lang: 'zh-CN',
+    login: 'enable',          // 评论登录模式（enable/force/disable）
+    visitorCount: true,       // 支持访问量统计（true/false）
+  },
+  giscus: {
+    repo: 'xxx',
+    repoId: 'xxx',
+    category: 'xxx',
+    categoryId: 'xxx',
+    mapping: 'title',
+    strict: '0',
+    reactionsEnabled: '1',
+    emitMetadata: '1',
+    inputPosition: 'top',
+    theme: 'light',
+    lang: 'zh-CN',
+    loading: 'lazy',
+  },
+  disqus: {
+    shortname: 'firefly',
   },
 };
 ```
 
-## Twikoo 评论系统
+### 主要字段说明
+- `type`：全局唯一，指定启用哪个评论系统（none 代表禁用评论与统计）
+- `visitorCount`（twikoo/waline专用）：每系统可分别开关访问量统计
+- `login`（waline专用）：控制是否需要登录后评论（force=强制登录，disable=只允许匿名，enable=两种均可）
 
-### 环境ID配置
+更多类型细节见 `src/types/config.ts`。
 
-Twikoo 环境ID是您评论系统的唯一标识符，可以通过以下方式获取：
+## Twikoo、Waline 访问量统计统一配置
 
-1. **使用官方服务**：`https://twikoo.vercel.app`
-2. **自建服务**：部署自己的 Twikoo 服务
+只需在对应子对象下设置 `visitorCount: true`，在文章（PostMeta）区、评论区即可自动显示 PV。
 
-### 语言设置
+- true：同时激活评论区和访问量统计，不想显示只需改为 false。
+- 两系统相互独立，互不影响。
 
-支持的语言代码：
+## Giscus、Disqus 配置
 
-- `zh-CN`: 简体中文
-- `zh-TW`: 繁体中文
-- `en`: 英文
-- `ja`: 日文
-- `ko`: 韩文
+目前 Giscus、Disqus 配置无需 visitorCount 字段——如未来官方支持，可无缝加入。
 
-### 完整配置示例
+## 登录模式说明（以 Waline 为例）
+- `login: 'enable'`   —— 推荐，访客/账号/OAuth 都可评论
+- `login: 'force'`    —— 仅允许登录后评论，适合私密或社区站点
+- `login: 'disable'`  —— 纯匿名评论/无需第三方登录
 
-```typescript
-export const commentConfig: CommentConfig = {
-  enable: true,
-  twikoo: {
-    envId: "https://twikoo.vercel.app",
-    lang: "zh-CN",
-  },
-};
-```
+可根据实际使用需求调整。
 
-## 部署 Twikoo 服务
+## 如何切换评论系统/访问量统计
+1. 只需改动 `type` 字段即可一键切换主评论系统，无需重启项目
+2. 独立控制每个系统的 `visitorCount`, 分别管理是否显示统计区块
 
-### 方法一：使用 Vercel（推荐）
+## 配置注意事项
+- 需保证评论系统开关、统计开关与自身 config 匹配
+- commentsConfig 变更后建议刷新页面、重启服务以确保 UI/逻辑同步
+- 配置项注释中含有详细每字段功能说明，可直接查阅 config 源文件
 
-1. 访问 [Twikoo 官方仓库](https://github.com/imaegoo/twikoo)
-2. 点击 "Deploy" 按钮
-3. 按照提示完成部署
-4. 获取部署后的域名作为 `envId`
+---
 
-### 方法二：使用其他平台
-
-1. 下载 Twikoo 源码
-2. 部署到您的服务器
-3. 配置域名和SSL证书
-4. 使用您的域名作为 `envId`
-
-## 文章访问量统计
-
-### 功能说明
-
-文章访问量统计功能基于 Twikoo 服务，可以显示每篇文章的浏览次数。该功能具有以下特点：
-
-- **独立控制**：可以独立于评论功能启用或禁用
-- **多语言支持**：支持多种语言的显示文本
-- **实时统计**：基于 Twikoo 的访问量统计
-- **自动更新**：页面切换时自动重新统计
-
-
-## 评论功能特性
-
-- **实时评论**：支持实时显示新评论
-- **多语言支持**：支持多种语言界面
-- **表情支持**：内置丰富的表情包
-- **Markdown支持**：评论内容支持 Markdown 格式
-- **回复功能**：支持评论回复和嵌套回复
-- **管理功能**：支持评论审核和管理
-
-## 注意事项
-
-1. **隐私政策**：使用评论系统前请确保符合相关隐私法规
-2. **内容审核**：建议定期审核评论内容
-3. **性能影响**：评论系统可能影响页面加载速度
-4. **备份数据**：定期备份评论数据
-
-## 常见问题
-
-### 评论功能
-
-**Q: 评论不显示怎么办？**
-A: 检查 `envId` 是否正确，确保 Twikoo 服务正常运行
-
-**Q: 如何更换评论系统？**
-A: 目前只支持 Twikoo，如需其他系统需要修改源码
-
-**Q: 如何自定义评论样式？**
-A: 可以通过 CSS 自定义评论组件的样式
-
-**Q: 如何禁用评论？**
-A: 将 `enable` 设置为 `false` 即可
-
-**Q: 评论数据如何备份？**
-A: Twikoo 支持数据导出功能，可在管理后台进行备份
-
-### 访问量统计
-
-**Q: 访问量统计不显示怎么办？**
-A: 确保 `enable` 和 `enableVisitorCount` 都为 `true`，并且 `twikoo.envId` 配置正确
-
-**Q: 访问量统计显示"加载中..."怎么办？**
-A: 检查 Twikoo 服务是否正常运行，网络连接是否正常
-
-**Q: 如何自定义访问量统计的显示文本？**
-A: 可以通过修改国际化文件来自定义显示文本
-
-**Q: 访问量统计支持哪些语言？**
-A: 支持中文简体、英文、日语、繁体中文等语言
-
-**Q: 访问量统计数据如何查看？**
-A: 可以通过 Twikoo 管理后台查看详细的访问量数据
+如需更完整示例与联动场景说明，请查阅 Firefly 根目录 `README.md` 或类型定义 `src/types/config.ts`。

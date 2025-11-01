@@ -118,6 +118,11 @@ const Note = defineNoteConfig({
           link: "friendsConfig-usage/",
           icon: "ri:links-line",
         },
+        {
+          text: "赞助配置",
+          link: "sponsorConfig-usage/",
+          icon: "ri:heart-line",
+        },
 
         // 其他配置
         { text: "番剧配置", link: "animeConfig-usage/", icon: "ri:tv-line" },

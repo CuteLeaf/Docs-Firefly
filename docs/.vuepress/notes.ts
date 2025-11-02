@@ -119,6 +119,11 @@ const Note = defineNoteConfig({
           icon: "ri:links-line",
         },
         {
+          text: "留言板配置",
+          link: "guestbook-usage/",
+          icon: "ri:chat-1-line",
+        },
+        {
           text: "赞助配置",
           link: "sponsorConfig-usage/",
           icon: "ri:heart-line",

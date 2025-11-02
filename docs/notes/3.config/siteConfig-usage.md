@@ -311,11 +311,23 @@ bangumi: {
 ```typescript
 pages: {
   anime: true, // 追番页面开关
-  projects: true, // 项目展示页面开关
-  timeline: true, // 时间线页面开关
-  skills: true, // 技能页面开关
+  sponsor: true, // 赞助页面开关
+  guestbook: true, // 留言板页面开关
 }
 ```
+
+### 页面开关说明
+
+| 选项 | 类型 | 说明 |
+|------|------|------|
+| `anime` | `boolean` | 追番页面开关，控制追番页面是否显示 |
+| `sponsor` | `boolean` | 赞助页面开关，控制赞助页面是否显示 |
+| `guestbook` | `boolean` | 留言板页面开关，控制留言板页面是否显示 |
+
+**注意**：
+- 当页面开关设置为 `false` 时，访问对应页面将返回 404 错误
+- 导航栏中的页面链接会根据开关状态自动显示或隐藏
+- 留言板详细配置请参考 [留言板配置文档](/config/guestbook-usage/)
 
 ## 完整配置示例
 
@@ -377,9 +389,8 @@ export const siteConfig: SiteConfig = {
   
   pages: {
     anime: false, // 不显示追番页面
-    projects: true,
-    timeline: true,
-    skills: true,
+    sponsor: true, // 显示赞助页面
+    guestbook: true, // 显示留言板页面
   },
 };
 ```
@@ -439,10 +450,9 @@ export const siteConfig: SiteConfig = {
   generateOgImages: false,
   
   pages: {
-    anime: true,
-    projects: true,
-    timeline: true,
-    skills: false, // 不显示技能页面
+    anime: true, // 显示追番页面
+    sponsor: false, // 不显示赞助页面
+    guestbook: true, // 显示留言板页面
   },
 };
 ```

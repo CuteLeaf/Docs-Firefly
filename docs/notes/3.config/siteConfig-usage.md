@@ -65,9 +65,9 @@ export const siteConfig: SiteConfig = {
 
 ```typescript
 themeColor: {
-  hue: 155, // 主题色相 (0-360)
-  fixed: false, // 是否固定主题色
-  defaultMode: "system", // 默认模式
+  hue: 165, // 主题色的默认色相，范围从 0 到 360。例如：红色：0，青色：200，蓝绿色：250，粉色：345
+  fixed: false, // 对访问者隐藏主题色选择器
+  defaultMode: "system", // 默认模式："light" 亮色，"dark" 暗色，"system" 跟随系统
 }
 ```
 
@@ -83,6 +83,7 @@ themeColor: {
 | 蓝色 | 240 | 稳重、可信 |
 | 紫色 | 300 | 神秘、创意 |
 | 粉色 | 330 | 温柔、浪漫 |
+| 蓝绿色 | 165-200 | 清新、现代 |
 
 ### 默认模式选项
 
@@ -100,13 +101,8 @@ themeColor: {
 favicon: [
   {
     src: "/assets/images/favicon.ico", // 图标文件路径
-    theme: "light", // 主题类型
-    sizes: "32x32", // 图标大小
-  },
-  {
-    src: "/assets/images/favicon-dark.ico",
-    theme: "dark",
-    sizes: "32x32",
+    theme: "light", // 可选，指定主题 'light' | 'dark'
+    sizes: "32x32", // 可选，图标大小
   },
 ]
 ```
@@ -200,17 +196,36 @@ navbarLogo: {
 
 ## 背景壁纸配置
 
-### 基础配置
+### 基础配置结构
 
 ```typescript
 backgroundWallpaper: {
-  mode: "banner", // 壁纸模式："banner" 横幅壁纸，"overlay" 全屏壁纸，"none" 纯色背景
-  switchable: true, // 是否允许用户通过导航栏切换壁纸模式，默认true
+  // 壁纸模式："banner" 横幅壁纸，"overlay" 全屏壁纸，"none" 纯色背景无壁纸
+  mode: "banner",
+  // 是否允许用户通过导航栏切换壁纸模式，设为false可提升性能（只渲染当前模式）
+  switchable: true,
+
+  // 背景图片配置
   src: {
-    desktop: "/assets/images/d1.webp", // 桌面背景
-    mobile: "/assets/images/m1.webp", // 移动背景
+    // 桌面背景图片
+    desktop: "/assets/images/d1.webp",
+    // 移动背景图片
+    mobile: "/assets/images/m1.webp",
   },
-  position: "0% 20%", // 图片位置
+
+  // Banner模式特有配置
+  banner: {
+    // 图片位置配置
+    position: "0% 20%",
+    // ... 其他banner配置
+  },
+
+  // 全屏透明覆盖模式特有配置
+  overlay: {
+    zIndex: -1,
+    opacity: 0.8,
+    blur: 1,
+  },
 }
 ```
 
@@ -229,37 +244,289 @@ switchable: true  // 允许切换，会在导航栏显示切换按钮
 switchable: false // 禁止切换，提升性能（只渲染当前模式）
 ```
 
-### 图片位置配置
+### 图片源配置
 
 ```typescript
-// 常用位置值
+src: {
+  desktop: "/assets/images/d1.webp", // 桌面背景图片
+  mobile: "/assets/images/m1.webp",  // 移动背景图片
+}
+```
+
+**说明**：
+- 如果只配置 `desktop`，移动端也会使用桌面图片
+- 如果只配置 `mobile`，桌面端也会使用移动图片
+- 建议为桌面和移动端分别配置不同尺寸的图片以优化加载速度
+
+## Banner模式配置
+
+### 图片位置配置
+
+`position` 选项位于 `backgroundWallpaper.banner.position`，用于控制横幅壁纸图片的显示位置，支持所有 CSS `object-position` 值。该配置会通过 `!important` 确保位置定位生效，不会被其他样式覆盖。
+
+```typescript
+backgroundWallpaper: {
+  mode: "banner",
+  banner: {
+    // 图片位置
+    // 支持所有CSS object-position值，如: 'top', 'center', 'bottom', 'left top', 'right bottom', '25% 75%', '10px 20px'..
+    // 如果不知道怎么配置百分百之类的配置，推荐直接使用：'center'居中，'top'顶部居中，'bottom' 底部居中，'left'左侧居中，'right'右侧居中
+    position: "0% 20%",
+  }
+}
+```
+
+#### 常用位置值
+
+```typescript
+// 基本位置
 position: "center"           // 居中
 position: "top"              // 顶部居中
 position: "bottom"           // 底部居中
 position: "left"             // 左侧居中
 position: "right"            // 右侧居中
-position: "10% 20%"          // 自定义位置
+
+// 组合位置
 position: "left top"         // 左上角
+position: "right top"        // 右上角
+position: "left bottom"      // 左下角
 position: "right bottom"     // 右下角
+
+// 百分比位置（推荐用于精细调整）
+position: "0% 20%"           // 水平 0%，垂直 20%（左上区域）
+position: "25% 75%"          // 水平 25%，垂直 75%
+position: "50% 50%"          // 完全居中（等同于 "center"）
+position: "center 30%"       // 水平居中，垂直 30%
+
+// 像素位置
+position: "10px 20px"        // 距离左边 10px，距离顶部 20px
+position: "center 50px"      // 水平居中，距离顶部 50px
 ```
+
+#### 位置值说明
+
+| 位置类型 | 格式 | 示例 | 说明 |
+|---------|------|------|------|
+| **关键字** | `"center"`, `"top"`, `"bottom"`, `"left"`, `"right"` | `"center"` | 简单的定位，易于理解 |
+| **组合关键字** | `"left top"`, `"right bottom"` 等 | `"right bottom"` | 两个关键字组合 |
+| **百分比** | `"X% Y%"` | `"0% 20%"` | 精确控制，支持小数 |
+| **像素值** | `"Xpx Ypx"` | `"10px 20px"` | 固定像素定位 |
+| **混合** | `"center 30%"`, `"left 50px"` 等 | `"center 30%"` | 关键字与数值混合 |
+
+#### 使用建议
+
+1. **推荐使用百分比**：`"0% 20%"` 这种方式既精确又易于理解
+2. **常用居中**：如果不确定，直接使用 `"center"` 即可
+3. **精细调整**：使用百分比可以进行像素级别的微调
+4. **响应式友好**：百分比值在不同屏幕尺寸下表现更一致
+
+#### 注意事项
+
+- `position` 使用 `!important` 确保不会被其他 CSS 覆盖
+- 该配置位于 `backgroundWallpaper.banner.position`，只影响横幅壁纸（banner 模式）
+- 图片会被 `object-fit: cover` 填充容器，`position` 控制图片在容器内的显示区域
+
+### 主页文本配置
+
+```typescript
+banner: {
+  homeText: {
+    // 主页显示自定义文本（全局开关）
+    enable: true,
+    // 主页横幅主标题
+    title: "Lovely firefly!",
+    // 主页横幅副标题（支持数组，可以设置多个副标题）
+    subtitle: [
+      "In Reddened Chrysalis, I Once Rest",
+      "From Shattered Sky, I Free Fall",
+      "Amidst Silenced Stars, I Deep Sleep",
+      "Upon Lighted Fyrefly, I Soon Gaze",
+      "From Undreamt Night, I Thence Shine",
+      "In Finalized Morrow, I Full Bloom",
+    ],
+    typewriter: {
+      enable: true, // 启用副标题打字机效果
+      speed: 100, // 打字速度（毫秒）
+      deleteSpeed: 50, // 删除速度（毫秒）
+      pauseTime: 2000, // 完全显示后的暂停时间（毫秒）
+    },
+  },
+}
+```
+
+**说明**：
+- `enable`: 控制是否在主页显示横幅文本
+- `title`: 主标题文本，显示在横幅中央上方
+- `subtitle`: 副标题，支持字符串或字符串数组
+  - 如果是数组，会依次显示多个副标题
+  - 如果 `typewriter.enable` 为 `true`，会以打字机效果显示
+- `typewriter`: 打字机效果配置
+  - `enable`: 是否启用打字机效果
+  - `speed`: 每个字符的显示间隔（毫秒）
+  - `deleteSpeed`: 删除字符的间隔（毫秒）
+  - `pauseTime`: 显示完整文本后的暂停时间（毫秒）
+
+### 图片来源标注配置
+
+```typescript
+banner: {
+  credit: {
+    enable: {
+      desktop: true, // 桌面端显示横幅图片来源文本
+      mobile: false, // 移动端显示横幅图片来源文本
+    },
+    text: {
+      desktop: "Pixiv - 晚晚喵", // 桌面端要显示的来源文本
+      mobile: "Mobile Credit", // 移动端要显示的来源文本
+    },
+    url: {
+      desktop: "https://www.pixiv.net/artworks/135490046", // 桌面端原始艺术品或艺术家页面的 URL 链接
+      mobile: "", // 移动端原始艺术品或艺术家页面的 URL 链接
+    },
+  },
+}
+```
+
+**说明**：
+- `enable`: 分别控制桌面端和移动端是否显示图片来源标注
+- `text`: 显示的来源文本，可以分别设置桌面端和移动端的文本
+- `url`: 图片来源链接，点击标注会跳转到该链接
+  - 如果没有设置 `url` 或 `url` 为空，标注不可点击
+
+### 导航栏透明模式配置
+
+```typescript
+banner: {
+  navbar: {
+    transparentMode: "semifull", // 导航栏透明模式
+  },
+}
+```
+
+**透明模式选项**：
+
+| 模式 | 说明 |
+|------|------|
+| `"semi"` | 半透明加圆角 |
+| `"full"` | 完全透明 |
+| `"semifull"` | 动态透明（推荐）|
+
+**说明**：
+- `"semifull"` 会根据页面滚动动态调整导航栏透明度，提供更好的视觉效果
+
+### 波浪动画效果配置
+
+```typescript
+banner: {
+  waves: {
+    enable: {
+      desktop: true, // 桌面端启用波浪动画效果
+      mobile: true, // 移动端启用波浪动画效果
+    },
+    performance: {
+      quality: "high",
+      hardwareAcceleration: true, // 是否启用硬件加速
+    },
+  },
+}
+```
+
+**性能配置说明**：
+
+| 选项 | 值 | 说明 |
+|------|------|------|
+| `quality` | `"high"` | 最佳视觉效果，但GPU占用较高，适合高性能设备 |
+| | `"medium"` | 平衡性能和质量，适合中等性能设备 |
+| | `"low"` | 最低GPU占用，动画更简单，适合低性能设备 |
+| `hardwareAcceleration` | `true` | 启用GPU加速，提升性能但增加GPU占用 |
+| | `false` | 禁用GPU加速，降低GPU占用但可能影响性能 |
+
+**注意事项**：
+- 开启波浪动画可能会影响页面性能，请根据实际情况开启
+- 移动端设备建议使用 `quality: "medium"` 或 `quality: "low"`
+
+## Overlay模式配置
+
+### 全屏透明覆盖配置
+
+```typescript
+backgroundWallpaper: {
+  mode: "overlay",
+  overlay: {
+    zIndex: -1, // 层级，确保壁纸在背景层
+    opacity: 0.8, // 壁纸透明度（0-1）
+    blur: 1, // 背景模糊程度（像素）
+  },
+}
+```
+
+**配置说明**：
+
+| 选项 | 类型 | 说明 | 默认值 |
+|------|------|------|--------|
+| `zIndex` | `number` | 层级，确保壁纸在背景层 | `-1` |
+| `opacity` | `number` | 壁纸透明度，范围 0-1 | `0.8` |
+| `blur` | `number` | 背景模糊程度（像素） | `1` |
+
+**使用建议**：
+- `opacity` 建议设置在 0.6-0.9 之间，太低看不清，太高会遮挡内容
+- `blur` 建议设置在 0-3 之间，过度模糊会影响图片清晰度
 
 ## 功能配置
 
-### 目录功能
+### 追番配置
 
 ```typescript
-toc: {
-  enable: true, // 启用目录
-  depth: 3, // 目录深度 (1-6)
+bangumi: {
+  userId: "1163581", // 在此处设置你的Bangumi用户ID
 }
 ```
+
+**说明**：
+- 需要设置你的 Bangumi 用户 ID
+- 可以在 Bangumi 个人页面找到你的用户 ID
+
+### 文章页底部配置
+
+```typescript
+// 文章页底部的"上次编辑时间"卡片开关
+showLastModified: true,
+```
+
+### OpenGraph图片
+
+```typescript
+// OpenGraph图片功能,注意开启后要渲染很长时间，不建议本地调试的时候开启
+generateOgImages: false,
+```
+
+**说明**：
+- 开启后会为每篇文章生成 OpenGraph 图片
+- 会显著增加构建时间，不建议在本地开发时开启
+
+### 页面开关配置
+
+```typescript
+// 页面开关配置 - 控制特定页面的访问权限，设为false会返回404
+pages: {
+  anime: true, // 追番页面开关
+  sponsor: true, // 赞助页面开关
+  guestbook: true, // 留言板页面开关，需要配置评论系统
+}
+```
+
+**说明**：
+- 当页面开关设置为 `false` 时，访问对应页面将返回 404 错误
+- 导航栏中的页面链接会根据开关状态自动显示或隐藏
 
 ### 文章列表布局配置
 
 ```typescript
 postListLayout: {
-  defaultMode: "list", // 默认布局模式："list" 列表模式，"grid" 网格模式
-  allowSwitch: true, // 是否允许用户切换布局
+  // 默认布局模式："list" 列表模式（单列布局），"grid" 网格模式（双列布局）
+  defaultMode: "list",
+  // 是否允许用户切换布局
+  allowSwitch: true,
 }
 ```
 
@@ -280,189 +547,44 @@ postListLayout: {
 
 ```typescript
 pagination: {
-  postsPerPage: 8, // 每页显示的文章数量
+  // 每页显示的文章数量
+  postsPerPage: 10,
 }
 ```
 
-### 文章编辑时间
+### 目录功能
 
 ```typescript
-showLastModified: true, // 显示上次编辑时间
-```
-
-### OpenGraph图片
-
-```typescript
-generateOgImages: false, // 生成OG图片（影响构建时间）
-```
-
-### 追番配置
-
-```typescript
-bangumi: {
-  userId: "1163581", // Bangumi用户ID
+toc: {
+  // 目录功能开关
+  enable: true,
+  // 目录深度，1-3，1 表示只显示 h1 标题，2 表示显示 h1 和 h2 标题，依此类推
+  // depth在新版已弃用
+  depth: 3,
 }
 ```
 
-## 页面开关配置
-
-### 页面功能开关
+### 字体配置
 
 ```typescript
-pages: {
-  anime: true, // 追番页面开关
-  sponsor: true, // 赞助页面开关
-  guestbook: true, // 留言板页面开关
-}
+// 字体配置
+// 在src/config/fontConfig.ts中配置具体字体
+font: fontConfig,
 ```
 
-### 页面开关说明
+**说明**：
+- 字体配置在单独的 `fontConfig.ts` 文件中
+- 详见字体配置文档
 
-| 选项 | 类型 | 说明 |
-|------|------|------|
-| `anime` | `boolean` | 追番页面开关，控制追番页面是否显示 |
-| `sponsor` | `boolean` | 赞助页面开关，控制赞助页面是否显示 |
-| `guestbook` | `boolean` | 留言板页面开关，控制留言板页面是否显示 |
-
-**注意**：
-- 当页面开关设置为 `false` 时，访问对应页面将返回 404 错误
-- 导航栏中的页面链接会根据开关状态自动显示或隐藏
-- 留言板详细配置请参考 [留言板配置文档](/config/guestbook-usage/)
-
-## 完整配置示例
-
-### 技术博客配置
-
-```typescript
-export const siteConfig: SiteConfig = {
-  title: "张三的技术博客",
-  subtitle: "分享技术，记录成长",
-  description: "专注于前端开发、Node.js 和云原生技术的个人技术博客",
-  keywords: ["前端", "JavaScript", "React", "Node.js", "技术博客"],
-  lang: "zh_CN",
-  
-  themeColor: {
-    hue: 200, // 蓝色主题
-    fixed: false,
-    defaultMode: "system",
-  },
-  
-  favicon: [
-    {
-      src: "/assets/images/favicon.ico",
-      theme: "light",
-      sizes: "32x32",
-    },
-  ],
-  
-  navbarLogo: {
-    type: "icon",
-    value: "material-symbols:code",
-  },
-  
-  backgroundWallpaper: {
-    mode: "banner",
-    switchable: true,
-    src: {
-      desktop: "/assets/images/tech-bg.webp",
-      mobile: "/assets/images/tech-bg-mobile.webp",
-    },
-    position: "center",
-  },
-  
-  toc: {
-    enable: true,
-    depth: 3,
-  },
-  
-  postListLayout: {
-    defaultMode: "list",
-    allowSwitch: true,
-  },
-  
-  pagination: {
-    postsPerPage: 8,
-  },
-  
-  showLastModified: true,
-  generateOgImages: true,
-  
-  pages: {
-    anime: false, // 不显示追番页面
-    sponsor: true, // 显示赞助页面
-    guestbook: true, // 显示留言板页面
-  },
-};
-```
-
-### 个人网站配置
-
-```typescript
-export const siteConfig: SiteConfig = {
-  title: "李四的个人网站",
-  subtitle: "设计师 & 开发者",
-  description: "UI/UX 设计师，全栈开发者，分享设计心得和技术经验",
-  keywords: ["设计", "UI", "UX", "前端", "全栈"],
-  lang: "zh_CN",
-  
-  themeColor: {
-    hue: 300, // 紫色主题
-    fixed: false,
-    defaultMode: "light",
-  },
-  
-  favicon: [
-    {
-      src: "/assets/images/favicon.png",
-      theme: "light",
-      sizes: "32x32",
-    },
-  ],
-  
-  navbarLogo: {
-    type: "image",
-    value: "/assets/images/logo.svg",
-    alt: "李四的Logo",
-  },
-  
-  backgroundWallpaper: {
-    mode: "overlay",
-    switchable: true,
-    src: "/assets/images/pattern.webp",
-    position: "center",
-  },
-  
-  toc: {
-    enable: true,
-    depth: 2,
-  },
-  
-  postListLayout: {
-    defaultMode: "grid",
-    allowSwitch: true,
-  },
-  
-  pagination: {
-    postsPerPage: 6,
-  },
-  
-  showLastModified: false,
-  generateOgImages: false,
-  
-  pages: {
-    anime: true, // 显示追番页面
-    sponsor: false, // 不显示赞助页面
-    guestbook: true, // 显示留言板页面
-  },
-};
-```
+#
 
 ## 注意事项
 
 1. **SEO优化**：合理设置标题、描述和关键词
-2. **性能考虑**：大图片会影响加载速度
-3. **响应式设计**：确保在不同设备上正常显示
+2. **性能考虑**：大图片会影响加载速度，建议使用 WebP 格式并压缩
+3. **响应式设计**：确保在不同设备上正常显示，建议为桌面和移动端分别配置图片
 4. **语言支持**：选择正确的语言代码
+5. **位置配置**：`position` 位于 `backgroundWallpaper.banner.position`，不要放在错误的位置
 
 ## 常见问题
 
@@ -489,6 +611,12 @@ A: 修改 `postListLayout.defaultMode` 为 `"list"` 或 `"grid"`，设置 `allow
 
 **Q: 如何调整每页显示的文章数量？**
 A: 修改 `pagination.postsPerPage` 的值
+
+**Q: 如何设置横幅图片位置？**
+A: 修改 `backgroundWallpaper.banner.position` 的值，支持所有 CSS `object-position` 值
+
+**Q: 为什么图片位置不生效？**
+A: 确保 `position` 配置在 `backgroundWallpaper.banner.position` 中，而不是 `backgroundWallpaper.position`
 
 **Q: 布局切换按钮在哪里？**
 A: 在导航栏右侧，屏幕宽度大于1200px时显示

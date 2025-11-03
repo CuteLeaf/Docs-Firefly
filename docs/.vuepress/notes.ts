@@ -88,6 +88,11 @@ const Note = defineNoteConfig({
           icon: "ri:flower-line",
         },
         { text: "字体配置", link: "fontConfig-usage/", icon: "ri:font-size" },
+        {
+          text: "随机封面图配置",
+          link: "coverImageConfig-usage/",
+          icon: "ri:image-line",
+        },
 
         // 布局配置
         {

@@ -19,7 +19,9 @@ src/config/navBarConfig.ts
 
 ```typescript
 interface NavBarConfig {
-  links: NavBarLink[];  // 导航链接数组
+  links: (NavBarLink | LinkPreset)[];  // 导航链接数组（支持预设）
+  searchMethod?: NavBarSearchMethod;   // 搜索方式（可选，推荐独立导出）
+  meiliSearchConfig?: MeiliSearchConfig; // MeiliSearch 配置（可选，推荐独立导出）
 }
 
 interface NavBarLink {
@@ -42,11 +44,6 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
     LinkPreset.Home,
     LinkPreset.Archive,
   ];
-
-  // 根据配置决定是否添加追番页面
-  if (siteConfig.pages.anime) {
-    links.push(LinkPreset.Anime);
-  }
 
   // 支持自定义导航栏链接,并且支持多级菜单
   links.push({
@@ -71,14 +68,41 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 
   links.push(LinkPreset.Friends);
 
+  // 根据配置决定是否添加留言板页面
+  if (siteConfig.pages.guestbook) {
+    links.push(LinkPreset.Guestbook);
+  }
+
   links.push({
     name: "关于",
     url: "/content/",
     icon: "material-symbols:info",
-    children: [LinkPreset.About],
+    children: [
+      ...(siteConfig.pages.anime ? [LinkPreset.Anime] : []),
+      ...(siteConfig.pages.sponsor ? [LinkPreset.Sponsor] : []),
+      LinkPreset.About,
+    ],
   });
-  
+
+  // 仅返回链接，搜索相关配置通过 navBarSearchConfig 独立导出
   return { links };
+};
+
+// 导航搜索配置
+export const navBarSearchConfig: NavBarSearchConfig = {
+  // 可选：PageFind，MeiliSearch
+  // 选择 PageFind 时：NavBarSearchMethod.PageFind
+  // 选择 MeiliSearch 时：NavBarSearchMethod.MeiliSearch
+  method: NavBarSearchMethod.PageFind,
+  // 当选择 MeiliSearch 时的配置
+  meiliSearchConfig: {
+    INDEX_NAME: 'posts',
+    CONTENT_DIR: 'src/content/posts',
+    MEILI_HOST: 'http://localhost:7700',
+    MEILI_MASTER_KEY: 'aVeryLongAndSecureMasterKey',
+    PUBLIC_MEILI_HOST: 'http://localhost:7700',
+    PUBLIC_MEILI_SEARCH_KEY: '41134b15079da66ca545375edbea848a9b7173dff13be2028318fefa41ae8f2b',
+  }
 };
 
 export const navBarConfig: NavBarConfig = getDynamicNavBarConfig();
@@ -158,6 +182,16 @@ export const LinkPreset = {
     url: "/anime/",
     icon: "material-symbols:movie",
   },
+  Sponsor: {
+    name: "赞助",
+    url: "/sponsor/",
+    icon: "material-symbols:volunteer-activism",
+  },
+  Guestbook: {
+    name: "留言板",
+    url: "/guestbook/",
+    icon: "material-symbols:forum",
+  },
 } as const;
 ```
 
@@ -180,6 +214,64 @@ links: [
     LinkPreset.Home,
     LinkPreset.Archive,
   ]
+}
+```
+
+### 在 Navbar 中的使用示例
+
+```typescript
+// Navbar.astro 中：
+import { navBarConfig, navBarSearchConfig } from "@/config";
+
+// 传入搜索组件
+<Search
+  searchMethod={navBarSearchConfig.method}
+  meiliSearchConfig={navBarSearchConfig.meiliSearchConfig}
+/>;
+
+// 判断是否加载 Pagefind（仅生产）
+if (navBarSearchConfig.method === NavBarSearchMethod.PageFind && import.meta.env.PROD) {
+  // 注入 pagefind 逻辑
+}
+```
+
+## 搜索方式配置
+
+导航栏支持两种搜索实现：
+
+- `NavBarSearchMethod.PageFind`（默认）：基于 Pagefind 的前端全文搜索，无需服务端
+- `NavBarSearchMethod.MeiliSearch`：基于 MeiliSearch 的服务端/自托管搜索，需额外配置索引与服务
+
+```typescript
+enum NavBarSearchMethod {
+  PageFind = 'PageFind',
+  MeiliSearch = 'MeiliSearch'
+}
+
+type MeiliSearchConfig = {
+  INDEX_NAME: string;          // 索引名称
+  CONTENT_DIR: string;         // 内容目录（用于构建索引时）
+  MEILI_HOST: string;          // MeiliSearch 服务地址（管理端）
+  MEILI_MASTER_KEY?: string;   // 管理密钥（仅构建或管理时使用）
+  PUBLIC_MEILI_HOST: string;   // 前端可访问的搜索地址
+  PUBLIC_MEILI_SEARCH_KEY: string; // 前端使用的 Search Key
+}
+
+// 示例：
+export const navBarSearchConfig: NavBarSearchConfig = {
+  // 可选：PageFind，MeiliSearch
+  // 选择 PageFind 时：NavBarSearchMethod.PageFind
+  // 选择 MeiliSearch 时：NavBarSearchMethod.MeiliSearch
+  method: NavBarSearchMethod.PageFind,
+  // 当选择 MeiliSearch 时的配置
+  meiliSearchConfig: {
+    INDEX_NAME: 'posts',
+    CONTENT_DIR: 'src/content/posts',
+    MEILI_HOST: 'http://localhost:7700',
+    MEILI_MASTER_KEY: 'aVeryLongAndSecureMasterKey',
+    PUBLIC_MEILI_HOST: 'http://localhost:7700',
+    PUBLIC_MEILI_SEARCH_KEY: '41134b15079da66ca545375edbea848a9b7173dff13be2028318fefa41ae8f2b',
+  }
 }
 ```
 

@@ -34,9 +34,7 @@ author: emn178
 sourceLink: "https://github.com/emn178/markdown"
 draft: false
 date: 2025-01-20
-image:
-  url: 'https://example.com/image.jpg'
-  alt: '图片描述'
+image: ./cover.jpg
 pubDate: 2025-01-20
 ---
 ```

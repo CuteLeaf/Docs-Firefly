@@ -99,7 +99,6 @@ export const navBarSearchConfig: NavBarSearchConfig = {
     INDEX_NAME: 'posts',
     CONTENT_DIR: 'src/content/posts',
     MEILI_HOST: 'http://localhost:7700',
-    MEILI_MASTER_KEY: 'aVeryLongAndSecureMasterKey',
     PUBLIC_MEILI_HOST: 'http://localhost:7700',
     PUBLIC_MEILI_SEARCH_KEY: '41134b15079da66ca545375edbea848a9b7173dff13be2028318fefa41ae8f2b',
   }
@@ -252,7 +251,6 @@ type MeiliSearchConfig = {
   INDEX_NAME: string;          // 索引名称
   CONTENT_DIR: string;         // 内容目录（用于构建索引时）
   MEILI_HOST: string;          // MeiliSearch 服务地址（管理端）
-  MEILI_MASTER_KEY?: string;   // 管理密钥（仅构建或管理时使用）
   PUBLIC_MEILI_HOST: string;   // 前端可访问的搜索地址
   PUBLIC_MEILI_SEARCH_KEY: string; // 前端使用的 Search Key
 }
@@ -268,7 +266,6 @@ export const navBarSearchConfig: NavBarSearchConfig = {
     INDEX_NAME: 'posts',
     CONTENT_DIR: 'src/content/posts',
     MEILI_HOST: 'http://localhost:7700',
-    MEILI_MASTER_KEY: 'aVeryLongAndSecureMasterKey',
     PUBLIC_MEILI_HOST: 'http://localhost:7700',
     PUBLIC_MEILI_SEARCH_KEY: '41134b15079da66ca545375edbea848a9b7173dff13be2028318fefa41ae8f2b',
   }

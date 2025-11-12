@@ -23,6 +23,7 @@ src/config/siteConfig.ts
 export const siteConfig: SiteConfig = {
   title: "Firefly", // 网站标题
   subtitle: "Demo site", // 网站副标题
+  site_url: "https://firefly.cuteleaf.cn", // 网站URL
   description: "Firefly 是一款基于 Astro 框架开发的清新美观且现代化个人博客主题...", // 网站描述
   keywords: [ // SEO关键词
     "Firefly",
@@ -45,6 +46,7 @@ export const siteConfig: SiteConfig = {
 |------|------|------|------|
 | `title` | `string` | 网站标题 | 是 |
 | `subtitle` | `string` | 网站副标题 | 是 |
+| `site_url` | `string` | 网站URL | 是 |
 | `description` | `string` | 网站描述（SEO用） | 否 |
 | `keywords` | `string[]` | SEO关键词数组 | 否 |
 | `lang` | `string` | 网站语言代码 | 是 |

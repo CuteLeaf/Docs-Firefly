@@ -272,6 +272,70 @@ export const navBarSearchConfig: NavBarSearchConfig = {
 }
 ```
 
+### MeiliSearch配置
+- 创建 `.env` 文件，添加以下环境变量：
+    ```ini
+    MEILI_MASTER_KEY=aVeryLongAndSecureMasterKey
+    ```
+#### 使用官方在线服务
+1. 注册并登录 [MeiliSearch Cloud](https://cloud.meilisearch.com/register)
+2. 创建一个新的 MeiliSearch 实例
+    ![CleanShot 2025-11-13 at 21.32.40.png](https://lsky.useforall.com/other/2025/11/13/6915dea58f997.png)
+3. 获取实例的 Host 和 API Key
+    ![CleanShot 2025-11-13 at 21.36.40.png](https://lsky.useforall.com/other/2025/11/13/6915defc93816.png)
+    - `Copy URL` 即为 `PUBLIC_MEILI_HOST` 和 `MEILI_HOST`
+    - `Copy API Key` 即为 `MEILI_MASTER_KEY`
+4. 点进入实例，进入 `Settings` -> `API Keys`，创建一个新的 `Search Key`，用于前端搜索
+    ![CleanShot 2025-11-13 at 21.40.15@2x](https://lsky.useforall.com/other/2025/11/13/6915e0620803d.png)
+    - `Default Search API Key` 即为 `PUBLIC_MEILI_SEARCH_KEY`
+      - 注意：请确保该 Key 仅具有搜索权限，避免泄露写入权限
+5. 取一个你想要的名字，写入 `INDEX_NAME`，例如 `posts`
+6. 构建索引：
+    - 手动构建：`pnpm index:meili` （确保 `CONTENT_DIR` 指向你的内容目录）
+    - 打包时会自动构建索引
+
+#### Docker 部署 MeiliSearch
+1. 创建 `docker-compose.yml` 文件：
+    ```yaml
+    services:
+      meilisearch:
+    image: getmeili/meilisearch:latest
+    environment:
+      - MEILI_MASTER_KEY=aVeryLongAndSecureMasterKey
+      - MEILI_NO_ANALYTICS=true
+    volumes:
+      - ./meili_data:/meili_data
+    ports:
+      - 7700:7700 # 修改为你想要的端口
+    restart: unless-stopped
+    ```
+2. 启动 MeiliSearch：
+    ```bash
+    docker compose up -d
+    ```
+3. 创建一个搜索专用的 API Key：
+    ```bash
+    curl \
+      -X POST 'http://localhost:7700/keys' \
+      -H 'Content-Type: application/json' \
+      -H 'Authorization: Bearer aVeryLongAndSecureMasterKey' \
+      --data-binary '{
+        "description": "Public Search Key for Astro Frontend",
+        "actions": ["search"],
+        "indexes": ["posts"],
+        "expiresAt": null
+      }'
+    ```
+    - 将 `posts` 替换为你的 `INDEX_NAME`
+    - 将 `aVeryLongAndSecureMasterKey` 替换为你的 Master Key
+4. 使用 `http://localhost:7700` 作为 `MEILI_HOST` 和 `PUBLIC_MEILI_HOST`
+5. 使用上一步创建的搜索 Key 作为 `PUBLIC_MEILI_SEARCH_KEY`
+6. 构建索引：
+    - 手动构建：`pnpm index:meili` （确保 `CONTENT_DIR` 指向你的内容目录）
+    - 打包时会自动构建索引
+
+> 更多使用方法请参考：[MeiliSearch 官方文档](https://docs.meilisearch.com/)
+
 ## 自定义链接配置
 
 ### 基础链接

@@ -19,11 +19,11 @@ src/config/sidebarConfig.ts
 
 ```typescript
 interface SidebarLayoutConfig {
-  enable: boolean;                    // 是否启用侧边栏功能
-  position: "left" | "right";        // 侧边栏位置
-  components: SidebarComponent[];     // 侧边栏组件配置列表
-  defaultAnimation: AnimationConfig; // 默认动画配置
-  responsive: ResponsiveConfig;      // 响应式布局配置
+  enable: boolean;                           // 是否启用侧边栏功能
+  position: "left" | "right" | "both";       // 侧边栏位置：left=左侧，right=右侧，both=双侧
+  components: SidebarComponent[];            // 侧边栏组件配置列表
+  defaultAnimation: AnimationConfig;        // 默认动画配置
+  responsive: ResponsiveConfig;             // 响应式布局配置
 }
 
 interface SidebarComponent {
@@ -31,6 +31,7 @@ interface SidebarComponent {
   enable: boolean;                   // 是否启用该组件
   order: number;                     // 显示顺序
   position: "top" | "sticky";        // 组件位置
+  sidebar: "left" | "right";         // 所在侧边栏（仅在 position="both" 时需要）
   class: string;                     // CSS类名
   animationDelay: number;            // 动画延迟时间
   responsive?: ResponsiveOptions;    // 响应式配置
@@ -45,8 +46,9 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
   // 是否启用侧边栏功能
   enable: true,
 
-  // 侧边栏位置：左侧或右侧
-  position: "left",
+  // 侧边栏位置：left=左侧，right=右侧，both=双侧
+  // 注意：开启双侧后网格（双列）模式将无法使用，且右侧组件会在宽度低于1024px时隐藏
+  position: "both",
 
   // 侧边栏组件配置列表
   components: [
@@ -62,15 +64,13 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 
   // 响应式布局配置
   responsive: {
-    breakpoints: {
-      mobile: 768,
-      tablet: 1024,
-      desktop: 1280,
-    },
+    // 不同设备的布局模式
+    // hidden:不显示侧边栏   drawer:抽屉模式(移动端不显示)   sidebar:显示侧边栏
+    // 使用 Tailwind 标准断点：mobile(<768px), tablet(768px-1023px), desktop(>=1024px)
     layout: {
-      mobile: "sidebar",
-      tablet: "sidebar", 
-      desktop: "sidebar",
+      mobile: "sidebar",    // 移动端：<768px
+      tablet: "sidebar",    // 平板端：768px-1023px
+      desktop: "sidebar",   // 桌面端：>=1024px
     },
   },
 };
@@ -86,6 +86,7 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
   enable: true,
   order: 1,
   position: "top",
+  sidebar: "left",  // 所在侧边栏
   class: "onload-animation",
   animationDelay: 0,
 }
@@ -104,6 +105,7 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
   enable: true,
   order: 2,
   position: "top",
+  sidebar: "left",
   class: "onload-animation",
   animationDelay: 50,
 }
@@ -122,6 +124,7 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
   enable: true,
   order: 3,
   position: "sticky",
+  sidebar: "left",
   class: "onload-animation",
   animationDelay: 150,
   responsive: {
@@ -143,6 +146,7 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
   enable: true,
   order: 5,
   position: "sticky",
+  sidebar: "left",
   class: "onload-animation",
   animationDelay: 250,
   responsive: {
@@ -156,17 +160,37 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 - 自动折叠功能
 - 显示标签使用频率
 
-### 5. 广告组件 (advertisement)
+### 5. 站点统计组件 (stats)
+
+```typescript
+{
+  type: "stats",
+  enable: true,
+  order: 6,
+  position: "top",
+  sidebar: "right",
+  class: "onload-animation",
+  animationDelay: 200,
+}
+```
+
+**功能：**
+- 显示站点运行天数
+- 显示文章总数、分类数、标签数
+- 显示总字数统计
+
+### 6. 广告组件 (advertisement)
 
 ```typescript
 {
   type: "advertisement",
-  enable: true,
-  order: 6,
+  enable: false,
+  order: 10,
   position: "sticky",
+  sidebar: "left",  // 或 "right"
   class: "onload-animation",
   animationDelay: 300,
-  configId: "ad1",  // 对应 adConfig1
+  configId: "ad1",  // 对应 adConfig 中的配置ID
 }
 ```
 
@@ -179,13 +203,14 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 
 ### 组件类型 (type)
 
-| 类型 | 说明 | 必需配置 |
-|------|------|----------|
-| `profile` | 用户资料组件 | 无 |
-| `announcement` | 公告组件 | 无 |
-| `categories` | 分类组件 | 无 |
-| `tags` | 标签组件 | 无 |
-| `advertisement` | 广告组件 | `configId` |
+| 类型 | 说明 | 必需配置 | 所在侧边栏 |
+|------|------|----------|------------|
+| `profile` | 用户资料组件 | 无 | 通常在左侧 |
+| `announcement` | 公告组件 | 无 | 通常在左侧 |
+| `categories` | 分类组件 | 无 | 通常在左侧 |
+| `tags` | 标签组件 | 无 | 通常在左侧 |
+| `stats` | 站点统计组件 | 无 | 通常在右侧 |
+| `advertisement` | 广告组件 | `configId` | 可自定义 |
 
 ### 显示顺序 (order)
 
@@ -317,15 +342,17 @@ layout: {
 ```typescript
 export const sidebarLayoutConfig: SidebarLayoutConfig = {
   enable: true,
-  position: "left",
+  position: "both",  // 双侧边栏模式
   
   components: [
+    // 左侧边栏组件
     // 用户资料 - 固定在顶部
     {
       type: "profile",
       enable: true,
       order: 1,
       position: "top",
+      sidebar: "left",
       class: "onload-animation",
       animationDelay: 0,
     },
@@ -336,6 +363,7 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
       enable: true,
       order: 2,
       position: "top",
+      sidebar: "left",
       class: "onload-animation",
       animationDelay: 50,
     },
@@ -346,6 +374,7 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
       enable: true,
       order: 3,
       position: "sticky",
+      sidebar: "left",
       class: "onload-animation",
       animationDelay: 150,
       responsive: {
@@ -359,6 +388,7 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
       enable: true,
       order: 5,
       position: "sticky",
+      sidebar: "left",
       class: "onload-animation",
       animationDelay: 250,
       responsive: {
@@ -366,23 +396,37 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
       },
     },
     
-    // 广告1 - 粘性定位
+    // 右侧边栏组件
+    // 站点统计 - 固定在顶部
     {
-      type: "advertisement",
+      type: "stats",
       enable: true,
       order: 6,
+      position: "top",
+      sidebar: "right",
+      class: "onload-animation",
+      animationDelay: 200,
+    },
+    
+    // 广告1 - 粘性定位（左侧）
+    {
+      type: "advertisement",
+      enable: false,
+      order: 10,
       position: "sticky",
+      sidebar: "left",
       class: "onload-animation",
       animationDelay: 300,
       configId: "ad1",
     },
     
-    // 广告2 - 粘性定位（已禁用）
+    // 广告2 - 粘性定位（右侧）
     {
       type: "advertisement",
-      enable: false,  // 禁用
-      order: 7,
+      enable: false,
+      order: 10,
       position: "sticky",
+      sidebar: "right",
       class: "onload-animation",
       animationDelay: 350,
       configId: "ad2",
@@ -396,11 +440,6 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
   },
   
   responsive: {
-    breakpoints: {
-      mobile: 768,
-      tablet: 1024,
-      desktop: 1280,
-    },
     layout: {
       mobile: "sidebar",
       tablet: "sidebar",
@@ -462,13 +501,26 @@ components: [
 ### 1. 组件顺序规划
 
 ```typescript
-// 推荐顺序
+// 单侧边栏推荐顺序
 components: [
   { type: "profile", order: 1 },        // 用户信息最重要
   { type: "announcement", order: 2 },   // 公告次重要
   { type: "categories", order: 3 },     // 导航功能
   { type: "tags", order: 4 },           // 导航功能
   { type: "advertisement", order: 5 },  // 广告最后
+]
+
+// 双侧边栏推荐配置
+components: [
+  // 左侧：主要导航和内容
+  { type: "profile", sidebar: "left", order: 1 },
+  { type: "announcement", sidebar: "left", order: 2 },
+  { type: "categories", sidebar: "left", order: 3 },
+  { type: "tags", sidebar: "left", order: 5 },
+  
+  // 右侧：辅助信息
+  { type: "stats", sidebar: "right", order: 6 },
+  { type: "advertisement", sidebar: "right", order: 10 },
 ]
 ```
 
@@ -527,7 +579,39 @@ A: 修改 `position` 配置：
 {
   position: "right",  // 改为右侧
 }
+
+// 或启用双侧边栏
+{
+  position: "both",  // 双侧边栏
+}
 ```
+
+### Q: 如何配置双侧边栏？
+
+A: 设置 `position: "both"` 并为每个组件指定 `sidebar` 属性：
+
+```typescript
+{
+  position: "both",
+  components: [
+    {
+      type: "profile",
+      sidebar: "left",  // 显示在左侧
+      // ... 其他配置
+    },
+    {
+      type: "stats",
+      sidebar: "right",  // 显示在右侧
+      // ... 其他配置
+    },
+  ],
+}
+```
+
+**注意事项：**
+- 开启双侧边栏后，文章列表的网格（双列）布局将无法使用
+- 右侧组件会在宽度低于1024px时自动隐藏
+- 需要在 `siteConfig.ts` 中将 `postListLayout.defaultMode` 设置为 `"list"`
 
 ### Q: 如何添加新的组件类型？
 

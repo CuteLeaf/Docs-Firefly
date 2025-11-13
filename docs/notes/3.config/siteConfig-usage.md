@@ -526,6 +526,7 @@ pages: {
 ```typescript
 postListLayout: {
   // 默认布局模式："list" 列表模式（单列布局），"grid" 网格模式（双列布局）
+  // 如果sidebarConfig.ts中侧边栏配置启用了"both"双侧边栏，则无法使用文章列表"grid"网格（双列）布局
   defaultMode: "list",
   // 是否允许用户切换布局
   allowSwitch: true,
@@ -534,10 +535,10 @@ postListLayout: {
 
 #### 布局模式说明
 
-| 模式 | 说明 | 特点 |
-|------|------|------|
-| `"list"` | 列表模式 | 单列布局，显示文章封面，适合详细阅读 |
-| `"grid"` | 网格模式 | 双列布局，无封面，适合快速浏览 |
+| 模式 | 说明 | 特点 | 注意事项 |
+|------|------|------|----------|
+| `"list"` | 列表模式 | 单列布局，显示文章封面，适合详细阅读 | 兼容所有侧边栏配置 |
+| `"grid"` | 网格模式 | 双列布局，无封面，适合快速浏览 | **与双侧边栏冲突，开启双侧边栏时无法使用** |
 
 #### 响应式行为
 
@@ -609,7 +610,7 @@ A: 修改 `lang` 字段，并配置对应的翻译文件
 A: 合理设置 `description` 和 `keywords` 字段
 
 **Q: 如何设置文章列表布局？**
-A: 修改 `postListLayout.defaultMode` 为 `"list"` 或 `"grid"`，设置 `allowSwitch` 控制是否允许用户切换
+A: 修改 `postListLayout.defaultMode` 为 `"list"` 或 `"grid"`，设置 `allowSwitch` 控制是否允许用户切换。注意：如果在 `sidebarConfig.ts` 中启用了双侧边栏（`position: "both"`），则无法使用 `"grid"` 模式。
 
 **Q: 如何调整每页显示的文章数量？**
 A: 修改 `pagination.postsPerPage` 的值
